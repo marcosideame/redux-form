@@ -1,20 +1,21 @@
-import { List } from 'immutable'
+import { List, toList } from 'immutable'
 
 export default (list = List.isList(list) || List(), index, removeNum, value) => {
-  if (index < list.count()) {
+  const usedList = list instanceof List ? list : toList(list);
+  if (index < usedList.count()) {
     if (value === undefined && !removeNum) { // inserting undefined
       // first insert null and then re-set it to undefined
-      return list.splice(index, 0, null).set(index, undefined)
+      return usedList.splice(index, 0, null).set(index, undefined)
     }
     if (value != null) {
-      return list.splice(index, removeNum, value)  // removing and adding
+      return usedList.splice(index, removeNum, value)  // removing and adding
     } else {
-      return list.splice(index, removeNum)  // removing
+      return usedList.splice(index, removeNum)  // removing
     }
   }
   if (removeNum) { // trying to remove non-existant item: return original array
-    return list
+    return usedList
   }
   // trying to add outside of range: just set value
-  return list.set(index, value)
+  return usedList.set(index, value)
 }
